@@ -9,17 +9,24 @@ function UploadComponent() {
 
     const [result, setResults] = useState([]);
 
+    const [error, setError] = useState('');
+
     const handleUploadChange = (e) => {
-        Papa.parse(e.target.files[0], {
-            header: true,
-            skipEmptyLines: true,
-            complete: ((results) => {
-                if (results.data) {
-                    setResults(results.data);
-                }
-            })
-        });
-    }
+        if (e.target.files[0].type === 'text/csv') {
+            setError('');
+            Papa.parse(e.target.files[0], {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    if (results.data) {
+                        setResults(results.data);
+                    }
+                },
+            });
+        } else {
+            setError('File format not supported');
+        }
+    };
 
     return (
         <>
@@ -35,7 +42,7 @@ function UploadComponent() {
                     onChange={(e) => handleUploadChange(e)}
                     style={{ display: 'none' }}
                 />
-
+                <small style={{ color: 'red' }}>{error}</small>
             </div>
             <div>
                 <DataComponent results={result}></DataComponent>

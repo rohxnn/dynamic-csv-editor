@@ -31,6 +31,8 @@ textarea {
     border: none;
     border-radius: 5px;
     box-sizing: border-box;
+    min-height: 50px; /* Set a minimum height */
+    height: auto; /* Allow the height to grow dynamically */
 
 }
 
