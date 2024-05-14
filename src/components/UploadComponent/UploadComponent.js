@@ -42,7 +42,7 @@ function UploadComponent() {
                     onChange={(e) => handleUploadChange(e)}
                     style={{ display: 'none' }}
                 />
-                <small style={{ color: 'red' }}>{error}</small>
+                <small style={{ color: 'red', marginTop: '10px' }}>{error}</small>
             </div>
             <div>
                 <DataComponent results={result}></DataComponent>

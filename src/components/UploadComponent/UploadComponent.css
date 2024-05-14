@@ -4,6 +4,7 @@
     align-items: center;
     height: 30%;
     padding: 30px;
+    flex-direction: column;
 }
 
 .upload-button {
