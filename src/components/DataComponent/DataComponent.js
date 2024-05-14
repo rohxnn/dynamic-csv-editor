@@ -28,7 +28,11 @@ function DataComponent({ results }) {
 
 
     const onClickDownload = () => {
-        exportToCSV(newResult);
+        const confirmed = window.confirm('Do you want to download?');
+        if(confirmed) {
+            exportToCSV(newResult);
+        }
+     
     }
 
     const exportToCSV = (data) => {
@@ -42,7 +46,7 @@ function DataComponent({ results }) {
     }
 
     return (
-        <div>
+        <div className="data-box">
             <div>
                 <table>
                     <thead>
@@ -67,7 +71,7 @@ function DataComponent({ results }) {
                 </table>
             </div>
             {newResult.length > 0 && (
-                <div>
+                <div className="button-box">
                     <div>
                         <button type="button" onClick={handleAddClick}>Add Item</button>
                     </div>
