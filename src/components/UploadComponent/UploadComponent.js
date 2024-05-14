@@ -15,9 +15,7 @@ function UploadComponent() {
             skipEmptyLines: true,
             complete: ((results) => {
                 if (results.data) {
-                    console.log(results.data);
                     setResults(results.data);
-                    console.log(result)
                 }
             })
         });
