@@ -1,4 +1,8 @@
 .container {
   min-height: 100vh;
-  background-color: rgb(225, 235, 250);
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
 }
