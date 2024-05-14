@@ -17,11 +17,9 @@ function DataComponent({ results }) {
             newRow[header] = '';
         });
         setNewResult([...newResult, newRow]);
-        console.log(newResult)
     }
 
     const handleInputChange = (e, i) => {
-        console.log(e.target.name)
         const { name, value } = e.target;
         const updatedList = [...newResult];
         updatedList[i][name] = value;
@@ -35,11 +33,8 @@ function DataComponent({ results }) {
 
     const exportToCSV = (data) => {
         const csv = Papa.unparse(data);
-        console.log(csv);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-        console.log(blob)
         const anchor = document.createElement('a');
-        console.log(anchor);
         anchor.href = URL.createObjectURL(blob);
         anchor.download = 'data.csv';
         anchor.click();
