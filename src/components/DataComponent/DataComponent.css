@@ -4,7 +4,6 @@
     align-items: center;
 }
 
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -13,7 +12,6 @@ table {
 
 th {
     border: 1px solid #ddd;
-
     font-weight: bold;
     padding: 12px;
     text-align: left;
@@ -21,26 +19,7 @@ th {
 
 td {
     border: 1px solid #ddd;
-
 }
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    box-sizing: border-box;
-    min-height: 50px; /* Set a minimum height */
-    height: auto; /* Allow the height to grow dynamically */
-
-}
-
-input[type="text"]:focus,
-textarea:focus {
-    outline: none;
-}
-
 
 .button-box {
     display: flex;
@@ -50,11 +29,11 @@ textarea:focus {
 
 .click-button {
     padding: 10px;
-    background-color: grey;
     color: white;
     border: none;
     background-color: #007bff;
     font-size: 20px;
+    border-radius: 5px;
 }
 
 .sort-button {
@@ -67,12 +46,54 @@ textarea:focus {
     background: none;
     border: none;
     padding: 0;
-    font-size: 12px; 
+    font-size: 12px;
     line-height: 1;
 }
 
 .head-button-box {
     display: flex;
-    align-items: center; 
+    align-items: center;
     gap: 10px;
+}
+
+.text-input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: 50px;
+    height: auto;
+}
+
+.text-input:focus {
+    outline: none;
+}
+
+
+.add-column-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-input {
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+}
+
+.delete-button {
+    background-color: rgb(247, 7, 7);
+    border: none;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow */
+    transition: box-shadow 0.3s ease; /* Add transition for smooth effect */
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    box-shadow: 0px 2px 4px rgba(197, 17, 17, 0.2); /* Add shadow */
 }

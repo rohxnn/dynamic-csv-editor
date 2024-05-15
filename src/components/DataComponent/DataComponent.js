@@ -112,7 +112,6 @@ function DataComponent({ results }) {
     };
 
     const handleConfirm = () => {
-        // Perform delete operation or any other action
         setShowModal(false);
     };
 
@@ -130,16 +129,18 @@ function DataComponent({ results }) {
                                             <button onClick={() => ascendingArrow(header)}>▲</button>
                                             <button onClick={() => descendingArrow(header)}>▼</button>
                                         </div>
-                                        <button onClick={() => onClickRemoveColumn(index)}>X</button>
+                                        <button className="delete-button" onClick={() => onClickRemoveColumn(index)}>X</button>
                                     </div>
-                                    <input type="text" onChange={(e) => setSearchItem({ key: header, value: e.target.value })}></input>
+                                    <input type="text" className="search-input" onChange={(e) => setSearchItem({ key: header, value: e.target.value })} placeholder="search..."></input>
                                 </th>
                             ))}
                             {newResult.length > 0 && (
                                 <th>
-                                    <input type="text" value={newColumn} onChange={(e) => setnewColumn(e.target.value)}></input>
+                                    <div className="add-column-box">
+                                    <input type="text" className="add-column" value={newColumn} onChange={(e) => setnewColumn(e.target.value)}></input>
                                     <button onClick={onClickAddColumn}>Add Column</button>
                                     {error && <span style={{ color: 'red' }}>{error}</span>}
+                                    </div>
                                 </th>
                             )}
                         </tr>
@@ -149,12 +150,12 @@ function DataComponent({ results }) {
                             <tr key={rowIndex}>
                                 {headers.map((header, colIndex) => (
                                     <td key={colIndex}>
-                                        <input type="text" name={header} value={result[header]}
+                                        <input className="text-input" type="text" name={header} value={result[header]}
                                             onChange={(e) => handleInputChange(e, rowIndex)}></input>
                                     </td>
                                 ))}
                                 <th>
-                                    <button onClick={() => onClickDeleteRow(rowIndex)}>X</button>
+                                    <button className="delete-button" onClick={() => onClickDeleteRow(rowIndex)}>X</button>
                                 </th>
                             </tr>
                         ))}
