@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import './DataComponent.css'
 //parser
 import Papa from 'papaparse';
+//modal 
+import ConfirmModal from '../../Modal/ConfirmModal';
 
 function DataComponent({ results }) {
     const [headers, setHeaders] = useState([]);
     const [newResult, setNewResult] = useState([]);
     const [newColumn, setnewColumn] = useState('');
     const [searchItem, setSearchItem] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('')
 
     useEffect(() => {
@@ -41,6 +44,7 @@ function DataComponent({ results }) {
     }
 
     const onClickDownload = () => {
+        setShowModal(true); 
         const confirmed = window.confirm('Do you want to download?');
         if (confirmed) {
             exportToCSV(newResult);
@@ -78,6 +82,7 @@ function DataComponent({ results }) {
         if (newColumn.trim() !== '') {
             setError('');
             setHeaders([...headers, newColumn]);
+            setNewResult(prevResult => prevResult.map(row => ({ ...row, [newColumn]: '' })));
             setnewColumn('');
         } else {
             setError('Column name cannot be empty');
@@ -101,6 +106,16 @@ function DataComponent({ results }) {
         });
         setNewResult(columnSortedResult);
     }
+
+    const handleCancel = () => {
+        setShowModal(false);
+    };
+
+    const handleConfirm = () => {
+        // Perform delete operation or any other action
+        setShowModal(false);
+    };
+
     return (
         <div className="data-box">
             <div>
@@ -153,6 +168,14 @@ function DataComponent({ results }) {
                     </div>
                     <div>
                         <button className="click-button" onClick={onClickDownload}>Download</button>
+                        {showModal && (
+                    <ConfirmModal
+                    message="Are you sure you want to delete this item?"
+                    onCancel={handleCancel}
+                    onConfirm={handleConfirm}
+                    showModal={showModal}
+                    />
+                    )}
                     </div>
                 </div>
             )}
