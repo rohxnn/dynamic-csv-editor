@@ -4,12 +4,26 @@ import './DataComponent.css'
 import Papa from 'papaparse';
 
 function DataComponent({ results }) {
-    const headers = Object.keys(results[0] || {});
+    const [headers, setHeaders] = useState([]);
     const [newResult, setNewResult] = useState([]);
+    const [newColumn, setnewColumn] = useState('');
+    const [searchItem, setSearchItem] = useState([]);
+    const [error, setError] = useState('')
 
     useEffect(() => {
+        setHeaders(Object.keys(results[0] || {}));
         setNewResult(results);
     }, [results]);
+
+    useEffect(() => {
+        const orginalResults = results;
+        if (searchItem.value !== '') {
+            setNewResult(orginalResults.filter((result =>
+                result[searchItem.key].toLowerCase().includes(searchItem.value.toLowerCase()))))
+        } else {
+            setNewResult(results);
+        }
+    }, [searchItem.value])
 
     const handleAddClick = () => {
         const newRow = {};
@@ -26,13 +40,11 @@ function DataComponent({ results }) {
         setNewResult(updatedList);
     }
 
-
     const onClickDownload = () => {
         const confirmed = window.confirm('Do you want to download?');
-        if(confirmed) {
+        if (confirmed) {
             exportToCSV(newResult);
         }
-     
     }
 
     const exportToCSV = (data) => {
@@ -45,6 +57,50 @@ function DataComponent({ results }) {
         URL.revokeObjectURL(anchor.href);
     }
 
+    const onClickDeleteRow = (i) => {
+        const updatedRow = [...newResult];
+        updatedRow.splice(i, 1);
+        setNewResult(updatedRow);
+    }
+
+    const onClickRemoveColumn = (i) => {
+        const updatedColumn = [...headers];
+        setNewResult(newResult.map(row => {
+            const updatedRow = { ...row };
+            delete updatedRow[updatedColumn[i]];
+            return updatedRow;
+        }));
+        updatedColumn.splice(i, 1);
+        setHeaders(updatedColumn);
+    }
+
+    const onClickAddColumn = () => {
+        if (newColumn.trim() !== '') {
+            setError('');
+            setHeaders([...headers, newColumn]);
+            setnewColumn('');
+        } else {
+            setError('Column name cannot be empty');
+        }
+    }
+
+    const ascendingArrow = (header) => {
+        const columnSortedResult = newResult.slice().sort((a, b) => {
+            const valueA = typeof a[header] === 'string' ? a[header].toLowerCase().trim() : a[header].trim();
+            const valueB = typeof b[header] === 'string' ? b[header].toLowerCase().trim() : b[header].trim();
+            return valueA.localeCompare(valueB);
+        });
+        setNewResult(columnSortedResult)
+    }
+
+    const descendingArrow = (header) => {
+        const columnSortedResult = newResult.slice().sort((a, b) => {
+            const valueA = typeof a[header] === 'string' ? a[header].toLowerCase().trim() : a[header].trim();
+            const valueB = typeof b[header] === 'string' ? b[header].toLowerCase().trim() : b[header].trim();
+            return valueB.localeCompare(valueA);
+        });
+        setNewResult(columnSortedResult);
+    }
     return (
         <div className="data-box">
             <div>
@@ -52,8 +108,25 @@ function DataComponent({ results }) {
                     <thead>
                         <tr>
                             {headers.map((header, index) => (
-                                <th key={index}>{header}</th>
+                                <th key={index}>
+                                    <div className="head-button-box">
+                                        {header}
+                                        <div className="sort-button">
+                                            <button onClick={() => ascendingArrow(header)}>▲</button>
+                                            <button onClick={() => descendingArrow(header)}>▼</button>
+                                        </div>
+                                        <button onClick={() => onClickRemoveColumn(index)}>X</button>
+                                    </div>
+                                    <input type="text" onChange={(e) => setSearchItem({ key: header, value: e.target.value })}></input>
+                                </th>
                             ))}
+                            {newResult.length > 0 && (
+                                <th>
+                                    <input type="text" value={newColumn} onChange={(e) => setnewColumn(e.target.value)}></input>
+                                    <button onClick={onClickAddColumn}>Add Column</button>
+                                    {error && <span style={{ color: 'red' }}>{error}</span>}
+                                </th>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -65,6 +138,9 @@ function DataComponent({ results }) {
                                             onChange={(e) => handleInputChange(e, rowIndex)}></input>
                                     </td>
                                 ))}
+                                <th>
+                                    <button onClick={() => onClickDeleteRow(rowIndex)}>X</button>
+                                </th>
                             </tr>
                         ))}
                     </tbody>
@@ -73,10 +149,10 @@ function DataComponent({ results }) {
             {newResult.length > 0 && (
                 <div className="button-box">
                     <div>
-                        <button type="button" onClick={handleAddClick}>Add Item</button>
+                        <button type="button" className="click-button" onClick={handleAddClick}>Add Row</button>
                     </div>
                     <div>
-                        <button onClick={onClickDownload}>Download</button>
+                        <button className="click-button" onClick={onClickDownload}>Download</button>
                     </div>
                 </div>
             )}
