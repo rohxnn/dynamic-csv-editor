@@ -44,7 +44,7 @@ function DataComponent({ results }) {
     }
 
     const onClickDownload = () => {
-        setShowModal(true); 
+        setShowModal(true);
         const confirmed = window.confirm('Do you want to download?');
         if (confirmed) {
             exportToCSV(newResult);
@@ -169,14 +169,7 @@ function DataComponent({ results }) {
                     </div>
                     <div>
                         <button className="click-button" onClick={onClickDownload}>Download</button>
-                        {showModal && (
-                    <ConfirmModal
-                    message="Are you sure you want to delete this item?"
-                    onCancel={handleCancel}
-                    onConfirm={handleConfirm}
-                    showModal={showModal}
-                    />
-                    )}
+                     
                     </div>
                 </div>
             )}
