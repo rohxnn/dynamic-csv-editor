@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import './DataComponent.css'
 //parser
 import Papa from 'papaparse';
-//modal 
-import ConfirmModal from '../../Modal/ConfirmModal';
 
 function DataComponent({ results }) {
     const [headers, setHeaders] = useState([]);
     const [newResult, setNewResult] = useState([]);
     const [newColumn, setnewColumn] = useState('');
     const [searchItem, setSearchItem] = useState([]);
-    const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('')
+    const Swal = require('sweetalert2');
 
     useEffect(() => {
         setHeaders(Object.keys(results[0] || {}));
@@ -43,12 +41,20 @@ function DataComponent({ results }) {
         setNewResult(updatedList);
     }
 
+
     const onClickDownload = () => {
-        setShowModal(true);
-        const confirmed = window.confirm('Do you want to download?');
-        if (confirmed) {
-            exportToCSV(newResult);
-        }
+        Swal.fire({
+            title: "Do you want to download the changes?",
+            showCancelButton: true,
+            confirmButtonText: "download",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                exportToCSV(newResult);
+                Swal.fire("downloaded!", "", "success");
+            } else if (result.isDenied) {
+                Swal.fire("Cancelled", "", "info");
+            }
+        });
     }
 
     const exportToCSV = (data) => {
@@ -62,20 +68,54 @@ function DataComponent({ results }) {
     }
 
     const onClickDeleteRow = (i) => {
-        const updatedRow = [...newResult];
-        updatedRow.splice(i, 1);
-        setNewResult(updatedRow);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const updatedRow = [...newResult];
+                updatedRow.splice(i, 1);
+                setNewResult(updatedRow);
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            }
+        });
     }
 
     const onClickRemoveColumn = (i) => {
-        const updatedColumn = [...headers];
-        setNewResult(newResult.map(row => {
-            const updatedRow = { ...row };
-            delete updatedRow[updatedColumn[i]];
-            return updatedRow;
-        }));
-        updatedColumn.splice(i, 1);
-        setHeaders(updatedColumn);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const updatedColumn = [...headers];
+                setNewResult(newResult.map(row => {
+                    const updatedRow = { ...row };
+                    delete updatedRow[updatedColumn[i]];
+                    return updatedRow;
+                }));
+                updatedColumn.splice(i, 1);
+                setHeaders(updatedColumn);
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            }
+        });
     }
 
     const onClickAddColumn = () => {
@@ -107,14 +147,6 @@ function DataComponent({ results }) {
         setNewResult(columnSortedResult);
     }
 
-    const handleCancel = () => {
-        setShowModal(false);
-    };
-
-    const handleConfirm = () => {
-        setShowModal(false);
-    };
-
     return (
         <div className="data-box">
             <div>
@@ -137,9 +169,9 @@ function DataComponent({ results }) {
                             {newResult.length > 0 && (
                                 <th>
                                     <div className="add-column-box">
-                                    <input type="text" className="add-column" value={newColumn} onChange={(e) => setnewColumn(e.target.value)}></input>
-                                    <button onClick={onClickAddColumn}>Add Column</button>
-                                    {error && <span style={{ color: 'red' }}>{error}</span>}
+                                        <input type="text" className="add-column" value={newColumn} onChange={(e) => setnewColumn(e.target.value)}></input>
+                                        <button onClick={onClickAddColumn}>Add Column</button>
+                                        {error && <span style={{ color: 'red' }}>{error}</span>}
                                     </div>
                                 </th>
                             )}
@@ -169,7 +201,6 @@ function DataComponent({ results }) {
                     </div>
                     <div>
                         <button className="click-button" onClick={onClickDownload}>Download</button>
-                     
                     </div>
                 </div>
             )}
